@@ -1,60 +1,54 @@
-// Importation des modules nécessaires
-require('dotenv').config(); // Charger les variables d'environnement
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const License = require('./models/License');
+const cors = require('cors');
 
-// Créer une application Express
+// Charger les variables d'environnement
+require('dotenv').config();
+
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Utiliser body-parser pour parser les requêtes JSON
+// Middleware
 app.use(bodyParser.json());
+app.use(express.static('public'));  // Sert les fichiers statiques à partir du dossier 'public'
+app.use(cors()); // Permet les requêtes Cross-Origin
 
-// Connexion à MongoDB Atlas
+// Connexion à MongoDB (ajuste avec ton URI MongoDB Atlas)
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connecté à MongoDB Atlas !'))
   .catch(err => console.log('Erreur de connexion à MongoDB :', err));
 
-// Définir le schéma de la licence
-const licenseSchema = new mongoose.Schema({
-  key: { type: String, required: true },
-  domain: { type: String, required: true }
-});
+// Route pour ajouter une licence
+app.post('/api/licenses', async (req, res) => {
+  const { licenseCode, domain } = req.body;
 
-// Créer un modèle de licence
-const License = mongoose.model('License', licenseSchema);
+  const newLicense = new License({ licenseCode, domain });
+  try {
+    await newLicense.save();
+    res.status(201).send('Licence ajoutée');
+  } catch (err) {
+    res.status(400).send('Erreur lors de l\'ajout de la licence');
+  }
+});
 
 // Route pour récupérer toutes les licences
-app.get('/licenses', async (req, res) => {
+app.get('/api/licenses', async (req, res) => {
   try {
-    const licenses = await License.find(); // Récupère toutes les licences dans la base de données
-    res.json(licenses); // Envoie les licences au frontend
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des licences' });
+    const licenses = await License.find();
+    res.json(licenses);
+  } catch (err) {
+    res.status(500).send('Erreur lors de la récupération des licences');
   }
 });
 
-// Route pour ajouter une licence
-app.post('/add-license', async (req, res) => {
-  const { key, domain } = req.body;
-
-  // Vérifie que la clé et le domaine sont fournis
-  if (!key || !domain) {
-    return res.status(400).json({ message: 'Clé et domaine sont requis' });
-  }
-
-  try {
-    // Crée une nouvelle licence et l'enregistre dans la base de données
-    const newLicense = new License({ key, domain });
-    await newLicense.save();
-
-    res.status(201).json({ message: 'Licence ajoutée avec succès' }); // Réponse de succès
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de l\'ajout de la licence' });
-  }
+// Serve l'index.html pour la racine (accès au panel)
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
 });
 
-// Lancer le serveur sur le port 3000
-app.listen(3000, () => {
-  console.log('Serveur démarré sur http://localhost:3000');
+// Démarrer le serveur
+app.listen(port, () => {
+  console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
