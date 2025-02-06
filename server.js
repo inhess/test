@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const License = require('./models/License');
+const path = require('path'); // Ajouté pour utiliser le chemin de fichiers
 const cors = require('cors');
 
 // Charger les variables d'environnement
@@ -12,7 +13,6 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static('public'));  // Sert les fichiers statiques à partir du dossier 'public'
 app.use(cors()); // Permet les requêtes Cross-Origin
 
 // Connexion à MongoDB (ajuste avec ton URI MongoDB Atlas)
@@ -45,7 +45,7 @@ app.get('/api/licenses', async (req, res) => {
 
 // Serve l'index.html pour la racine (accès au panel)
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(path.join(__dirname, 'index.html')); // Sert le fichier index.html depuis la racine
 });
 
 // Démarrer le serveur
