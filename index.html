@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Gestion des Licences</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Panel de gestion des licences</h1>
+
+  <!-- Formulaire d'ajout d'une licence -->
+  <form id="licenseForm">
+    <label for="licenseCode">Code de la licence:</label>
+    <input type="text" id="licenseCode" name="licenseCode" required>
+
+    <label for="domain">Domaine autorisé:</label>
+    <input type="text" id="domain" name="domain" required>
+
+    <button type="submit">Ajouter la licence</button>
+  </form>
+
+  <h2>Licences existantes</h2>
+  <ul id="licenseList"></ul>
+
+  <script src="script.js"></script>
+</body>
+</html>
