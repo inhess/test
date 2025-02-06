@@ -1,4 +1,5 @@
 // Importation des modules nécessaires
+require('dotenv').config(); // Charger les variables d'environnement
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -9,9 +10,9 @@ const app = express();
 // Utiliser body-parser pour parser les requêtes JSON
 app.use(bodyParser.json());
 
-// Connexion à la base de données MongoDB
-mongoose.connect('mongodb://localhost:27017/licences', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connecté à MongoDB !'))
+// Connexion à MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connecté à MongoDB Atlas !'))
   .catch(err => console.log('Erreur de connexion à MongoDB :', err));
 
 // Définir le schéma de la licence
