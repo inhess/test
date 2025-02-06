@@ -1,0 +1,24 @@
+{
+  "name": "license-management",
+  "version": "1.0.0",
+  "description": "Gestion des licences pour un site Shopify avec MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.10.0",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
